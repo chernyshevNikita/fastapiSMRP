@@ -38,4 +38,30 @@ async def create_order_item(order_item: OrderItemIn):
     order_item_dto = OrderItemOut(**orm_order_item.__dict__)
     return order_item_dto
 
+@router.post("/update_order_item", response_model=OrderItemOut)
+async def update_order_item(order_item: OrderItemIn):
+    session = get_session()
+
+    orm_order_item = session.query(OrderItems).get((order_item.order_id,order_item.product_id))
+    orm_order_item.product_count = order_item.product_count
+    id_ = order_item.product_id
+    prod = session.query(Product).get(id_)
+    orm_order_item.product_price = prod.price
+    session.commit()
+    order_item_dto = OrderItemOut.from_orm(orm_order_item)
+    return order_item_dto
+
+
+@router.delete("/delete_order_item/{order_id}/{product_id}", response_model=OrderItemOut)
+async def delete_order_item(order_id: int,product_id: int , session: Session = Depends(get_session)):
+    order_item: OrderItems = session.query(OrderItems).get((order_id, product_id))
+    if order_item:
+        order_item_dto = OrderItemOut(**order_item.__dict__)
+        session.delete(order_item)
+        session.commit()
+        return order_item_dto
+    else:
+        raise HTTPException(status_code=404,
+                            detail=f"Order with id {order_id} not found!")
+
 
