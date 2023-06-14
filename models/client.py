@@ -13,8 +13,8 @@ class ClientIn(sqlalchemy_to_pydantic(Client)):
         orm_mode = True
 
 
-ClientIn.__fields__.pop('client_id')
-print(ClientIn.__fields__)
+#ClientIn.__fields__.pop('client_id')
+#print(ClientIn.__fields__)
 
 
 class ClientsOut(BaseModel):
