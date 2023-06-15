@@ -10,7 +10,7 @@ from models.seller import SellersOut
 router = APIRouter(prefix="/seller", tags=["seller"])
 
 
-@router.get("/{seller_id}", response_model=SellerOut)
+@router.get("/get", response_model=SellerOut)
 async def get_one(seller_id: int,
                   session: Session = Depends(get_session)):
     seller: Seller = session.query(Seller).get(seller_id)
